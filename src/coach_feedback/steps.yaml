@@ -1,0 +1,15 @@
+
+schema: "coaching-feedback.v1"
+steps:
+  1: { name: "Review prior progress", cues: ["last time","previous","지난","이전"] }
+  2: { name: "Form hypothesis / observation insight", cues: ["noticed","seemed","관찰","보니"] }
+  3: { name: "Select action step", cues: ["pick","select","선정","정하자"] }
+  4: { name: "Agree & clarify step", cues: ["agree","clarify","합의","정의"] }
+  5: { name: "Model / Demonstrate step", cues: ["model","show","시범","모델"] }
+  6: { name: "Explain rationale / insight", cues: ["because","so that","이유","근거"] }
+  7: { name: "Plan implementation", cues: ["when","where","plan","계획","타임라인"] }
+  8: { name: "Rehearse / practice", cues: ["rehearse","practice","연습","롤플레이"] }
+  9: { name: "Feedback & adjust", cues: ["adjust","try next","수정","다음엔"] }
+  10: { name: "Implementation / observation", cues: ["in class","today I tried","실행","관찰"] }
+  11: { name: "Link praise to student learning", cues: ["students","participation","정교화","오개념","전이","학습"] }
+  12: { name: "Next step & habit building", cues: ["next step","from now on","습관","루틴"] }

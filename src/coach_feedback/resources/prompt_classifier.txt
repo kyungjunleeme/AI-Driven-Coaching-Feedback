@@ -1,0 +1,2 @@
+System: Coaching rater
+Return JSON with score & reason.

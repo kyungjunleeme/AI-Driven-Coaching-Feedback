@@ -1,0 +1,131 @@
+asyncapi: 3.0.0
+id: 'urn:coach:feedback:event-server'
+info:
+  title: Coach Feedback Event Server
+  version: '0.1.0'
+  description: |
+    WebSocket-based event server for instructional coaching.
+    - Sends `FeedbackCreated` and `TranscriptChunkAppended` events per session
+    - Receives `RequestFeedback` command (optional)
+servers:
+  local-ws:
+    host: localhost:8002
+    protocol: ws
+defaultContentType: application/json
+channels:
+  sessions.{sessionId}.feedback:
+    address: sessions/{sessionId}/feedback
+    parameters:
+      sessionId:
+        description: Session identifier
+    messages:
+      FeedbackCreated:
+        $ref: '#/components/messages/FeedbackCreated'
+  sessions.{sessionId}.transcript:
+    address: sessions/{sessionId}/transcript
+    parameters:
+      sessionId:
+        description: Session identifier
+    messages:
+      TranscriptChunkAppended:
+        $ref: '#/components/messages/TranscriptChunkAppended'
+  sessions.{sessionId}.commands:
+    address: sessions/{sessionId}/commands
+    parameters:
+      sessionId:
+        description: Session identifier
+    messages:
+      RequestFeedback:
+        $ref: '#/components/messages/RequestFeedback'
+operations:
+  sendFeedback:
+    action: send
+    channel:
+      $ref: '#/channels/sessions.{sessionId}.feedback'
+    messages:
+      - $ref: '#/channels/sessions.{sessionId}.feedback/messages/FeedbackCreated'
+  sendTranscriptChunk:
+    action: send
+    channel:
+      $ref: '#/channels/sessions.{sessionId}.transcript'
+    messages:
+      - $ref: '#/channels/sessions.{sessionId}.transcript/messages/TranscriptChunkAppended'
+  receiveRequestFeedback:
+    action: receive
+    channel:
+      $ref: '#/channels/sessions.{sessionId}.commands'
+    messages:
+      - $ref: '#/channels/sessions.{sessionId}.commands/messages/RequestFeedback'
+components:
+  messages:
+    FeedbackCreated:
+      name: FeedbackCreated
+      title: New feedback generated
+      summary: Emitted when feedback is created for a session.
+      contentType: application/json
+      payload:
+        type: object
+        required: [session_id, step_focus, feedback]
+        properties:
+          session_id: { type: string }
+          step_focus: { type: integer, minimum: 1, maximum: 12 }
+          feedback:
+            type: object
+            required: [praise, improvement, evidence_quote, student_learning_link, next_step]
+            properties:
+              praise: { type: string }
+              improvement: { type: string }
+              why_it_matters: { type: string }
+              evidence_quote:
+                type: array
+                items: { type: string }
+                minItems: 1
+                maxItems: 2
+              student_learning_link: { type: string }
+              next_step: { type: string }
+              confidence: { type: number, minimum: 0, maximum: 1 }
+    TranscriptChunkAppended:
+      name: TranscriptChunkAppended
+      title: Transcript chunk appended
+      contentType: application/json
+      payload:
+        type: object
+        required: [session_id, chunk]
+        properties:
+          session_id: { type: string }
+          chunk:
+            type: object
+            required: [id, speaker, text]
+            properties:
+              id: { type: string }
+              speaker: { type: string, enum: [coach, teacher, other] }
+              text: { type: string }
+              ts: { type: string, nullable: true }
+    RequestFeedback:
+      name: RequestFeedback
+      title: Request feedback generation
+      summary: Client asks the server to start feedback generation for a given session and optional step.
+      contentType: application/json
+      payload:
+        type: object
+        required: [session_id]
+        properties:
+          session_id: { type: string }
+          mode:
+            type: string
+            enum: [local, cloud]
+            description: Select local (no AWS) or cloud (AWS Bedrock)
+            default: local
+          audio_ref:
+            type: string
+            nullable: true
+            description: Local file path or s3:// URL
+          force_step:
+            type: integer
+            minimum: 1
+            maximum: 12
+            nullable: true
+          language:
+            type: string
+            enum: [ko, en]
+            default: ko
