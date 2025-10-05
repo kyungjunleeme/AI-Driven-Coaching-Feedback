@@ -16,10 +16,10 @@ ui run:
 	uv run streamlit run app.py
 
 test:
-	uv run pytest -q
+	PYTHONPATH=. uv run pytest -q
 
 lint:
-	uv run ruff check . || true
+	uv run ruff check .
 
 format:
 	uv run ruff check --fix . || true

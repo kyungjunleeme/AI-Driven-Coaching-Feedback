@@ -1,1 +1,1 @@
-__all__ = ['schema','classifier','generator']
+__all__ = ["schema", "classifier", "generator"]

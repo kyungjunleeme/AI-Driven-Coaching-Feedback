@@ -1,6 +1,6 @@
-
 import pytest
 from src.coach_feedback.aws import bedrock_client as bc
+
 
 @pytest.mark.cloud
 def test_cloud_imports():

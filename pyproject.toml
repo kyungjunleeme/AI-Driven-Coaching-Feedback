@@ -42,3 +42,6 @@ target-version = ["py312"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-q"
+markers = [
+    "cloud: cloud-dependent tests",
+]

@@ -1,7 +1,9 @@
 from __future__ import annotations
-import os, json, requests
+import os
+import requests
 
 ASYNCAPI_SERVER = os.getenv("ASYNCAPI_SERVER_URL", "http://localhost:8002")
+
 
 def publish_event(session_id: str, event_type: str, payload: dict) -> bool:
     url = f"{ASYNCAPI_SERVER}/publish/{session_id}"

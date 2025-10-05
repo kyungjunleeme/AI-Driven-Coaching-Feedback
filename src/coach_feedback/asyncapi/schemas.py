@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 FeedbackCreatedSchema = {
@@ -10,7 +9,7 @@ FeedbackCreatedSchema = {
         "feedback": {"type": "object"},
     },
     "required": ["type", "session_id", "step_focus", "feedback"],
-    "additionalProperties": True
+    "additionalProperties": True,
 }
 
 RequestFeedbackSchema = {
@@ -24,5 +23,5 @@ RequestFeedbackSchema = {
         "language": {"type": "string", "enum": ["ko", "en"]},
     },
     "required": ["type", "session_id"],
-    "additionalProperties": True
+    "additionalProperties": True,
 }

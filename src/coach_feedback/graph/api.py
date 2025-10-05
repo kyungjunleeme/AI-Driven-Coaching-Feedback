@@ -1,11 +1,13 @@
-
 from __future__ import annotations
-import json, os, strawberry
+import json
+import os
+import strawberry
 from typing import List, Optional
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 from fastapi import Depends
 from ..auth.cognito import cognito_auth_dependency, AUTH_REQUIRED
+
 
 @strawberry.type
 class TranscriptChunkType:
@@ -13,6 +15,7 @@ class TranscriptChunkType:
     speaker: str
     text: str
     ts: Optional[str] = None
+
 
 @strawberry.type
 class FeedbackType:
@@ -24,6 +27,7 @@ class FeedbackType:
     student_learning_link: str
     next_step: str
 
+
 @strawberry.type
 class SessionType:
     session_id: str
@@ -33,20 +37,25 @@ class SessionType:
     audio_s3: Optional[str] = None
     feedback_s3: Optional[str] = None
 
+
 SESSIONS_DIR = os.getenv("SESSIONS_DIR", "data/sessions")
+
 
 def _load_session(session_id: str) -> Optional[dict]:
     path = os.path.join(SESSIONS_DIR, session_id, "output", "feedback.json")
-    if not os.path.exists(path): return None
+    if not os.path.exists(path):
+        return None
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
 
 @strawberry.type
 class Query:
     @strawberry.field
     def get_session(self, session_id: str) -> Optional[SessionType]:
         data = _load_session(session_id)
-        if not data: return None
+        if not data:
+            return None
         fb = data["feedback"]
         return SessionType(
             session_id=data["session_id"],
@@ -56,6 +65,7 @@ class Query:
             audio_s3=data.get("audio_s3"),
             feedback_s3=data.get("feedback_s3"),
         )
+
 
 schema = strawberry.Schema(query=Query)
 app = FastAPI()

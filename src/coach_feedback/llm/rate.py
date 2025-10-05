@@ -1,5 +1,7 @@
 from __future__ import annotations
-import threading, time
+import threading
+import time
+
 
 class SimpleRateLimiter:
     def __init__(self, calls_per_sec: float):

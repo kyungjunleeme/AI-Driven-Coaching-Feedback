@@ -1,6 +1,7 @@
-
 from __future__ import annotations
-import os, json, threading, time
+import os
+import json
+
 try:
     from kafka import KafkaConsumer
 except Exception:
@@ -8,6 +9,7 @@ except Exception:
 
 TOPIC_COMMAND = os.getenv("KAFKA_TOPIC_COMMAND", "sessions.commands")
 BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
+
 
 def start_bridge():
     if KafkaConsumer is None:
@@ -21,13 +23,18 @@ def start_bridge():
         group_id="coach-feedback-bridge",
     )
     import requests
+
     base = os.getenv("ASYNCAPI_SERVER_URL", "http://localhost:8002")
     for msg in consumer:
         payload = msg.value
-        if not isinstance(payload, dict): continue
-        if payload.get("type") != "RequestFeedback": continue
+        if not isinstance(payload, dict):
+            continue
+        if payload.get("type") != "RequestFeedback":
+            continue
         session_id = payload.get("session_id", "unknown")
         try:
-            requests.post(f"{base}/commands/request-feedback/{session_id}", json=payload, timeout=10)
+            requests.post(
+                f"{base}/commands/request-feedback/{session_id}", json=payload, timeout=10
+            )
         except Exception:
             pass
